@@ -1,4 +1,4 @@
-import { generateGameObject } from '.'
+import { generateGameObject } from '../lib/game'
 
 describe(`generateGameObject`, () => {
   it(`returns a game object`, () => {

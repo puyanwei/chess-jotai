@@ -1,26 +1,8 @@
-import { piecesInitialState } from './../../constants/piecesInitialState'
+import { piecesInitialState } from '../constants/piecesInitialState'
 import { BoardPosition, GameObject, Orientation, Piece } from '@/types'
 import { orientations } from 'src/constants/orientations'
+import { traversalOrientationMap } from 'src/constants/traversalOrientationMap'
 import { switchPlayer } from 'src/utils/switchPlayer'
-
-type OrientationCoordinates = [
-  x: number,
-  y: number
-]
-
-type OrienationMap = Record<Orientation, OrientationCoordinates>
-
-const traversalOrientationMap:OrienationMap = {
-  up: [0, -1],
-  'up-right': [1, -1],
-  right: [1, 0],
-  'down-right': [1, 1],
-  down: [0, 1],
-  'down-left': [-1, 1],
-  left: [-1, 0],
-  'up-left': [-1, -1],
-}
-
 
 export function generatePieces(): Piece[] {
   return piecesInitialState
@@ -57,14 +39,13 @@ export function resolveValidPieceMoves(piece: Piece, game: GameObject) {
 export function resolveValidPieceAttacks(
   selectedPiece: Piece,
   game: GameObject
-): Piece[] {  
+): Piece[] {
   const isPieceKnight = selectedPiece.name === `knight`
   const attackRange = selectedPiece.attackRange
   const currentPosition = selectedPiece.position
   const occupiedPositions = game.pieces
     .filter(p => p.status !== `taken`)
     .map(p => p.position)
-
 
   if (isPieceKnight) {
     const positionsInRange = attackRange.map(range => {
@@ -74,25 +55,28 @@ export function resolveValidPieceAttacks(
       const xDistance = right - left
       return [x + xDistance, y + yDistance] as BoardPosition
     })
-  
+
     const occupiedEnemyPositions = game.pieces
       .filter(p => p.status !== `taken`)
       .filter(p => p.player !== game.playerTurn)
       .map(p => p.position)
 
-    const attackablePositions = occupiedEnemyPositions.filter(
-      enemyPosition => positionsInRange.map(pos => pos.join(`,`)).includes(enemyPosition.join(`,`))
+    const attackablePositions = occupiedEnemyPositions.filter(enemyPosition =>
+      positionsInRange
+        .map(pos => pos.join(`,`))
+        .includes(enemyPosition.join(`,`))
     )
-  
+
     return attackablePositions.map(pos => {
-      const resolvedPiece = game.pieces.find(piece => piece.position.join(`,`) === pos.join(`,`)) as Piece
+      const resolvedPiece = game.pieces.find(
+        piece => piece.position.join(`,`) === pos.join(`,`)
+      ) as Piece
       return resolvedPiece
-    }
-    )
+    })
   }
-    const closestOccupiedPositions = findClosestOccupiedPositions(
+  const closestOccupiedPositions = findClosestOccupiedPositions(
     currentPosition,
-    occupiedPositions,
+    occupiedPositions
   )
 
   const attacksInRange = attackRange.map(range => {
@@ -217,14 +201,13 @@ export function ensureAttackIsValid(
 
 export function findClosestOccupiedPositions(
   currentPosition: BoardPosition,
-  occupiedPositions: BoardPosition[],
+  occupiedPositions: BoardPosition[]
 ) {
-
   const obstructionObject = orientations.reduce((obj, orientation) => {
     obj[orientation] = findClosestOccupiedPosition(
       currentPosition,
       occupiedPositions,
-      orientation,
+      orientation
     )
     return obj
   }, {} as Record<Orientation, BoardPosition | undefined>)
@@ -235,7 +218,7 @@ export function findClosestOccupiedPositions(
 export function findClosestOccupiedPosition(
   currentPosition: BoardPosition,
   occupiedPositions: BoardPosition[],
-  orientation: Orientation,
+  orientation: Orientation
 ) {
   return resolveBoardPositionsByOrientation(currentPosition, orientation).find(
     pos => occupiedPositions.some(occPos => occPos.join(``) === pos.join(``))
@@ -244,10 +227,8 @@ export function findClosestOccupiedPosition(
 
 export function resolveBoardPositionsByOrientation(
   position: BoardPosition,
-  orientation: Orientation,
+  orientation: Orientation
 ) {
-
-
   const traversalOrientation = traversalOrientationMap[orientation]
   const resolvedPositions = []
 
@@ -328,20 +309,28 @@ function isPositionObstructed(
   return true
 }
 
+export function generatePromotedPiece(
+  game: GameObject,
+  position: BoardPosition
+) {
+  // get current player
+  const currentPlayer = game.playerTurn
 
-export function generatePromotedPiece(game: GameObject, position: BoardPosition) {
-    // get current player
-    const currentPlayer = game.playerTurn
+  // count number of queens for this player
+  const numberOfQueens = game.pieces.filter(
+    piece => piece.name === `queen` && piece.player === currentPlayer
+  ).length
 
-    // count number of queens for this player
-    const numberOfQueens = game.pieces.filter(piece => piece.name === `queen` && piece.player === currentPlayer).length
+  // return new queen piece with an id of number of queens plus one
+  const newQueen: Piece = {
+    ...piecesInitialState.find(
+      p => p.name === `queen` && p.player === currentPlayer
+    ),
+  } as Piece
+  newQueen.id = `${currentPlayer}-queen-${numberOfQueens + 1}`
+  newQueen.position = position
 
-    // return new queen piece with an id of number of queens plus one
-    const newQueen:Piece = {...piecesInitialState.find(p => p.name === `queen` && p.player === currentPlayer)} as Piece
-    newQueen.id = `${currentPlayer}-queen-${numberOfQueens + 1}`
-    newQueen.position = position
-
-    return newQueen
+  return newQueen
 }
 
 export function isPieceOnOpposingSide(piece: Piece, position: BoardPosition) {
@@ -354,19 +343,24 @@ export function isPieceOfType(piece: Piece, type: Piece[`name`]) {
   return piece.name === type
 }
 
-export function promotePieceIfValid(providedGame: GameObject, pieces: Piece[], position: BoardPosition) {
-  const game = {...providedGame, pieces }
-  
+export function promotePieceIfValid(
+  providedGame: GameObject,
+  pieces: Piece[],
+  position: BoardPosition
+) {
+  const game = { ...providedGame, pieces }
+
   const selectedPiece = game.selectedPiece
   if (!selectedPiece) return game
-  
+
   if (selectedPiece?.name !== `pawn`) return game
   if (!isPieceOnOpposingSide(selectedPiece, position)) return game
-  
+
   const promotedPiece = generatePromotedPiece(game, position)
-  
+
   const updatedPieces = game.pieces.map(p => {
-    if (p.id === selectedPiece.id) return {...p, status: `promoted` as Piece[`status`]}
+    if (p.id === selectedPiece.id)
+      return { ...p, status: `promoted` as Piece[`status`] }
     return p
   })
   const updatedPiecesWithNewPromotedPiece = [...updatedPieces, promotedPiece]

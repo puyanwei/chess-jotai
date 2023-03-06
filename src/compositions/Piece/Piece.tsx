@@ -40,10 +40,8 @@ export function Piece({
       dispatch({ type: `select`, piece })
       return
     }
-      
 
     if (isTargetPieceAnOpponent && !!gameObject.selectedPiece) {
-      
       dispatch({
         type: `attack`,
         piece: gameObject.selectedPiece as Piece,

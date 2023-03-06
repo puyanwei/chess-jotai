@@ -7,8 +7,8 @@ import {
   resolveBoardPositionsByOrientation,
   resolveOrientationOfTwoPositions,
   resolveValidPieceMoves,
-} from '.'
-import { generateGameObject } from '../game'
+} from '../lib/piece'
+import { generateGameObject } from '../lib/game'
 
 describe(`generate pieces`, () => {
   it(`all needed pieces are generated`, () => {

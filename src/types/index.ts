@@ -1,5 +1,9 @@
 import { ReactNode } from 'react'
 
+export type OrientationCoordinates = [x: number, y: number]
+
+export type OrienationMap = Record<Orientation, OrientationCoordinates>
+
 export interface Component {
   children?: ReactNode | string
   className?: string

@@ -1,4 +1,4 @@
-import { switchPlayer } from './switchPlayer'
+import { switchPlayer } from 'src/utils/switchPlayer'
 
 describe(`switchPlayer`, () => {
   it(`switches player from white to black`, () => {

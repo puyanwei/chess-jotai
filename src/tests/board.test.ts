@@ -1,4 +1,7 @@
-import { generateBoard, resolveGridPositionClassNameFromBoardPosition } from '.'
+import {
+  generateBoard,
+  resolveGridPositionClassNameFromBoardPosition,
+} from 'src/lib/board'
 
 describe(`generate board`, () => {
   it(`generates rows in the correct order`, () => {

@@ -1,6 +1,6 @@
-import { generateBoard } from 'src/lib/board'
 import { generatePieces } from 'src/lib/piece'
 import { GameObject, GameObjectLike } from '@/types'
+import { generateBoard } from './board'
 
 export function generateGameObject(config: GameObjectLike = {}): GameObject {
   return {
