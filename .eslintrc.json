@@ -1,0 +1,46 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "plugins": ["prettier", "@typescript-eslint", "unused-imports"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "rules": {
+    "import/no-unresolved": 0, // we should re-enable this once we've determined how to ignore module aliases (e.g @/stores/, @/utils/ etc)
+    "no-use-before-define": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react-hooks/exhaustive-deps": 0,
+    "react/no-unused-prop-types": 0,
+    "no-unused-vars": 0,
+    "@typescript-eslint/no-empty-interface": 0,
+    "unused-imports/no-unused-imports": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "jsx-a11y/no-noninteractive-tabindex": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "react/jsx-no-bind": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "import/no-cycle": 0,
+    "react/jsx-pascal-case": 0,
+    "react/destructuring-assignment": 0,
+    "no-console": ["error", { "allow": ["warn", "error", "info"] }],
+    "react/no-unescaped-entities": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "quotes": ["error", "backtick"],
+    "@next/next/no-html-link-for-pages": ["error", "next/pages/"],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ],
+    "no-nested-ternary": 0
+  },
+  "ignorePatterns": ["/next/.next", "/next/out"]
+}
